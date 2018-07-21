@@ -33,3 +33,4 @@
 
 misp
 bin/misp
+bin/test-*

@@ -2,6 +2,7 @@
 #define misp_h
 
 #include <iostream>
+#include "ast.h"
 
 #endif
 
