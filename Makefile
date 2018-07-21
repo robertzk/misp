@@ -4,7 +4,7 @@
 all: misp
 
 misp:
-	clang++ -Wall -std=c++11 misp.cpp -o misp
+	clang++ -Wall -std=c++11 misp.cpp -o bin/misp
 
 deps:
 	deps
