@@ -1,7 +1,7 @@
 # Multi-list processor language
 
 This repository forms the home of **MISP**, the multi-list processor language. This language
-is an experiment by the author — and also a chance a to learn some C++11. 
+is an experimental language envisionable as a superset of LISP — and also a chance a to learn some C++11. 
 
 MISP is distinct from [LISP](https://en.wikipedia.org/wiki/Lisp_(programming_language)) through
 its emphasis that the parentheticals grouping expressions are [*typed*](https://en.wikipedia.org/wiki/Type_theory).
