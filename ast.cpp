@@ -159,6 +159,8 @@ std::string MEXPR::to_str() const {
         ss << ' ';
       }
       ss << parent->val.atom->get_closer();
+    } else {
+      ss << ')';
     }
   }
 
