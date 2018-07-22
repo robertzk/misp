@@ -3,6 +3,7 @@
 
 #include "tokenizer.h"
 #include <iostream>
+#include <map>
 
 class MispExecutionStrategy {
 protected:
@@ -39,6 +40,42 @@ public:
   void effect(MEXP *node);
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };
+
+class MispBinding {
+protected:
+  typedef void(*MispLambda)(MEXP *, MEXP *, MispBinding *);
+
+  std::map<std::string,MispLambda> binding_table;
+
+public:
+
+  MispBinding() { }
+};
+
+class PrintBinding : public MispBinding {
+private:
+  std::ostream &os;
+
+  void initialize_table() {
+    binding_table["print"] = &PrintBinding::print;
+  }
+
+  static void print(MEXP* node, MEXP* sibling, MispBinding *binding) {
+    if (MEXP_IS_ATOM(node) && node->val.atom->to_str() == "print") {
+      if (sibling != NULL) {
+        (static_cast<PrintBinding*>(binding))->get_os() << MEXP_TO_STR(sibling);
+      }
+    }
+  }
+
+public:
+  PrintBinding(std::ostream &_os = std::cout) : MispBinding(), os(_os) {
+    initialize_table();
+  }
+
+  std::ostream &get_os() { return this->os; }
+};
+
 
 #endif
 
