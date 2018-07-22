@@ -141,6 +141,13 @@ bin/misp <(echo '(print this) is a (print misp) program')
 thismisp
 ```
 
+It is also possible to print entire MISP expressions.
+
+```
+bin/misp <(echo 'print (misp [is more powerful] { than you think } )')
+(misp [is more powerful] {than you think})%
+```
+
 ## License
 
 MISP is licensed under the [MIT License](LICENSE) and freely available for modification,
