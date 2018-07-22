@@ -9,7 +9,7 @@ Thus, whereas in LISP one can say `(foo bar baz)` is an application of the `foo`
 operands `bar` and `baz`, in MISP the tokens `(` and `)` themselves have semantics.
 
 Specifically, one can say `[foo bar baz]`, or `{foo bar baz}`, or even `[: foo bar baz :]`, which
-define new spontaneous types for the associated groupings — these parenthetical
+define new spontaneous types for the associated groupings. These parenthetical
 "operators" such as `[,]`, `{,}` and `[:,:]` are termed **enclosers**.
 
 MISP recognizes enclosers through the special primitive **atomic encloser tokens**,
@@ -43,7 +43,7 @@ default `base` ontobinding ties `print` to output in [`stdout`](https://en.wikip
 Thus, running `misp hello.misp` will print "hello world", but one
 can also remove all ontobindings through `misp --onto= hello.misp`. Such
 a program would have no side effects, as all of its effects on the external
-world have been removed, and thus print nothing.
+world have been removed, and thus it would print nothing.
 
 ## Running MISP
 
