@@ -104,6 +104,21 @@ MISP code parsed:
 -------------------------
 ```
 
+```
+bin/misp --parse examples/nested-hello-world.misp
+MISP input:
+-------------------------
+execute
+  (print hello)
+  (print world)
+-------------------------
+
+MISP code parsed:
+-------------------------
+(execute (print hello) (print world))
+-------------------------
+```
+
 ### Executing
 
 You can execute MISP programs by simply calling the function. This will
