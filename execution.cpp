@@ -56,7 +56,7 @@ void LTRAtomPrinterStrategy::finalize(MEXP *node, MEXP *sibling) {
  * ApplyBindingLTRStrategy
  */
 
-ApplyBindingLTRStrategy::ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding) {
+ApplyBindingLTRStrategy::ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding) : LTRTraverseStrategy(_program){
   if (_binding == NULL) {
     this->binding = new PrintBinding();
   } else {

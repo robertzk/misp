@@ -72,7 +72,7 @@ private:
 
 public:
 
-  ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL) : LTRTraverseStrategy(_program);
+  ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL);
 
   void effect(MEXP *node, MEXP *sibling = NULL);
   void finalize(MEXP *node, MEXP *sibling = NULL);
