@@ -45,6 +45,7 @@ void process_flags(std::vector<std::string> flags) {
     std::ofstream tempfile = std::ofstream(tempfilename);
 
     // TODO: Add --debug interaction: std::cout << "Executing into: " << tempfilename << "\n";
+    //PythonExecutionStrategy(code, std::cout, std::cout, tempfilename).execute();
     PythonExecutionStrategy(code, std::cout, tempfile, tempfilename).execute();
     tempfile.close();
 

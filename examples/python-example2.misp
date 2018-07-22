@@ -1,0 +1,11 @@
+(let x {
+  ( (string foo) (string bar) )
+  ( (string bum) (string butt) )
+} )
+
+(let y {
+  ( (string butt) (string poo) )
+} )
+
+(print (el x (string foo) ) )
+

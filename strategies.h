@@ -44,11 +44,18 @@ protected:
   static void import(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void apply_method(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_string(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void make_tuple(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_list(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_dict(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void call_function(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void assign(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void element(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void define_function(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void for_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void andor_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void in_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void return_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void unknown_binding(MEXP* node, MEXP* sibling, MispBinding *binding);
 
 public:
