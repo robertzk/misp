@@ -92,6 +92,7 @@ void PythonExecutionBinding::initialize_table() {
   // The dot application operator, e.g., (x subprocess call) == subprocess.call
   binding_table["x"]      = &PythonExecutionBinding::apply_function;
   binding_table["string"] = &PythonExecutionBinding::make_string;
+  binding_table["print"]  = &PythonExecutionBinding::print;
   binding_table["*"]      = &PythonExecutionBinding::unknown_binding;
 }
 
@@ -105,6 +106,20 @@ void PythonExecutionBinding::apply_function(MEXP* node, MEXP* sibling, MispBindi
   static_cast<PythonExecutionBinding*>(binding)->apply(node->val.node->get_children()->at(3), NULL);
 	static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
 	output << ")";
+}
+
+void PythonExecutionBinding::print(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  // TODO: Check arity
+  std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
+  output << "print ";
+  // TODO: Error if arity > 2
+  if (is_atomic_expression(node->val.node->get_children()->at(1))) {
+    static_cast<PythonExecutionBinding*>(binding)->apply(node->val.node->get_children()->at(1), NULL);
+    static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
+  } else {
+    output << MEXP_TO_STR(node->val.node->get_children()->at(1));
+  }
+	output << ";\n";
 }
 
 void PythonExecutionBinding::make_string(MEXP* node, MEXP* sibling, MispBinding *binding) {

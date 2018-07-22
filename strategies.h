@@ -43,6 +43,7 @@ protected:
   static void import(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void apply_function(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_string(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void unknown_binding(MEXP* node, MEXP* sibling, MispBinding *binding);
 
 public:
