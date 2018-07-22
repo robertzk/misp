@@ -63,6 +63,20 @@ MISP code parsed:
 -------------------------
 ```
 
+```
+bin/misp <(echo 'a (b c d [f e] {{ a t }} [: x :]')
+
+MISP input:
+-------------------------
+a (b c d [f e] {{ a t }} [: x :]
+-------------------------
+
+MISP code parsed:
+-------------------------
+(a (b c d [f e] {{ a t }} [: x :]))
+-------------------------
+```
+
 ## License
 
 MISP is licensed under the [MIT License](LICENSE) and freely available for modification,
