@@ -151,6 +151,30 @@ bin/misp <(echo 'print (misp [is more powerful] { than you think } )')
 (misp [is more powerful] {than you think})%
 ```
 
+### Debugging
+
+You can debug a MISP program by printing the tokens it sees through the `--debug` flag
+
+```
+bin/misp --debug <(echo 'print (misp [is more powerful] { than you think } )')
+Token: (
+Token: print
+Token: (
+Token: misp
+Token: [
+Token: is
+Token: more
+Token: powerful
+Finalizing: ]
+Token: {
+Token: than
+Token: you
+Token: think
+Finalizing: }
+Finalizing: )
+Finalizing: )
+```
+
 ## License
 
 MISP is licensed under the [MIT License](LICENSE) and freely available for modification,
