@@ -89,7 +89,7 @@ MISP input:
 this is {
   my cool program (
     and it goes like this [a b c]
-	)
+  )
 }
 -------------------------
 
