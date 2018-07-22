@@ -19,6 +19,11 @@ bool is_atom(MEXP *node) {
   return MEXP_IS_ATOM(node);
 }
 
+bool is_square_bracket_expression(MEXP *node) {
+  return MEXP_IS_EXPR(node) && is_atom(node->val.node->get_parent()) &&
+         MEXP_TO_STR(node->val.node->get_parent()) == "[";
+}
+
 bool is_encloser_atom(MEXP *node) {
   return (is_atom(node) && node->val.atom->encloser());
 }
@@ -83,7 +88,12 @@ void ShellExecutionStrategy::finalize(MEXP *node, MEXP *sibling) {
 
 void PythonExecutionBinding::apply(MEXP *node, MEXP *sibling) {  
   if (skipcount == 0) {
-    MispBinding::apply(node, sibling);
+    // TODO: Cache the [ operator
+    if (is_square_bracket_expression(node)) {
+      make_dict(node, sibling, this);     
+    } else {
+      MispBinding::apply(node, sibling);
+    }
   } else {
     // Do not re-execute sub-trees already executed by a parent tree.
     // TODO: Find a better way to do this.
@@ -97,6 +107,7 @@ void PythonExecutionBinding::initialize_table() {
   binding_table["x"]      = &PythonExecutionBinding::apply_method;
   binding_table["string"] = &PythonExecutionBinding::make_string;
   binding_table["call"]   = &PythonExecutionBinding::call_function;
+  binding_table["el"]     = &PythonExecutionBinding::element;
   binding_table["print"]  = &PythonExecutionBinding::print;
   binding_table["*"]      = &PythonExecutionBinding::unknown_binding;
 }
@@ -126,7 +137,7 @@ void PythonExecutionBinding::call_function(MEXP* node, MEXP* sibling, MispBindin
       output << MEXP_TO_STR(children->at(i));
     } else if (is_atomic_expression(children->at(i))) {
       // TODO: Figure out whether it makes sense to pass ->at(i+1) as sibling
-      static_cast<PythonExecutionBinding*>(binding)->apply(node->val.node->get_children()->at(i), NULL);
+      static_cast<PythonExecutionBinding*>(binding)->apply(children->at(i), NULL);
       static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
     } else {
       // TODO: Nested non-atomic expression... what to do?
@@ -135,6 +146,37 @@ void PythonExecutionBinding::call_function(MEXP* node, MEXP* sibling, MispBindin
     }
   }
 	output << ")";
+}
+
+void PythonExecutionBinding::element(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  // TODO: Check arity
+  std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
+  auto children = node->val.node->get_children();
+  // TODO: Fix this hackiness
+  if (is_square_bracket_expression(children->at(1))) {
+    static_cast<PythonExecutionBinding*>(binding)->apply(children->at(1), NULL);
+    static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
+  } else {
+    output << MEXP_TO_STR(children->at(1));
+  }
+  output << "[";
+
+  if (children->size() != 3) {
+    // TODO: Nested non-atomic expression... what to do?
+    std::cerr << "Primitive 'el' called with arity != 2";
+    throw std::exception();
+  } else if (is_atom(children->at(2))) {
+    output << MEXP_TO_STR(children->at(2));
+  } else if (is_atomic_expression(children->at(2))) {
+    // TODO: Figure out whether it makes sense to pass ->at(i+1) as sibling
+    static_cast<PythonExecutionBinding*>(binding)->apply(children->at(2), NULL);
+    static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
+  } else {
+    // TODO: Nested non-atomic expression... what to do?
+    std::cerr << "Nested non-atomic expression in primitive 'el'";
+    throw std::exception();
+  }
+	output << "]";
 }
 
 void PythonExecutionBinding::print(MEXP* node, MEXP* sibling, MispBinding *binding) {
@@ -149,6 +191,31 @@ void PythonExecutionBinding::print(MEXP* node, MEXP* sibling, MispBinding *bindi
     output << MEXP_TO_STR(node->val.node->get_children()->at(1));
   }
 	output << ";\n";
+}
+
+void PythonExecutionBinding::make_dict(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
+  output << "[";
+
+  auto children = node->val.node->get_children();
+  for (unsigned int i = 0; i < children->size(); i++) {
+    if (i > 0) {
+      output << ", ";
+    }
+    if (is_atom(children->at(i))) {
+      output << MEXP_TO_STR(children->at(i));
+    } else if (is_atomic_expression(children->at(i))) {
+      // TODO: Figure out whether it makes sense to pass ->at(i+1) as sibling
+      static_cast<PythonExecutionBinding*>(binding)->apply(children->at(i), NULL);
+      static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
+    } else {
+      // TODO: Nested non-atomic expression... what to do?
+      std::cerr << "Nested non-atomic expression in make_dict";
+      throw std::exception();
+    }
+  }
+
+  output << "]";
 }
 
 void PythonExecutionBinding::make_string(MEXP* node, MEXP* sibling, MispBinding *binding) {

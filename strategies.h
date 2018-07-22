@@ -44,7 +44,9 @@ protected:
   static void import(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void apply_method(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_string(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void make_dict(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void call_function(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void element(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void unknown_binding(MEXP* node, MEXP* sibling, MispBinding *binding);
 
