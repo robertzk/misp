@@ -66,18 +66,38 @@ public:
   std::ostream &get_os() { return this->os; }
 };
 
-class ApplyBindingLTRStrategy : public LTRTraverseStrategy {
+class TokenDebugBinding : public MispBinding {
 private:
+  std::ostream &os;
+
+  void initialize_table();
+  static void print_token(MEXP* node, MEXP* sibling, MispBinding *binding);
+
+public:
+  TokenDebugBinding(std::ostream &_os = std::cout) : MispBinding(), os(_os) { initialize_table(); }
+
+  std::ostream &get_os() { return this->os; }
+};
+
+class ApplyBindingLTRStrategy : public LTRTraverseStrategy {
+protected:
   MispBinding *binding;
 
 public:
-
   ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL);
 
   void effect(MEXP *node, MEXP *sibling = NULL);
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };
 
+class DebugTokensStrategy : public ApplyBindingLTRStrategy {
+public:
+  DebugTokensStrategy(MEXP *_program, std::ostream &_os = std::cout) : 
+    ApplyBindingLTRStrategy(_program, new TokenDebugBinding(_os)) {
+  }
+
+  void finalize(MEXP *node, MEXP *sibling = NULL);
+};
 
 #endif
 

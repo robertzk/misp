@@ -83,6 +83,12 @@ void MispBinding::apply(MEXP *node, MEXP *sibling) {
     auto it = this->binding_table.find(node->val.atom->to_str());
     if (it != this->binding_table.end()) { // Bound lambda
       (*it->second)(node, sibling, this);
+    } else {
+      // TODO: Cache * route
+      it = this->binding_table.find("*");
+      if (it != this->binding_table.end()) { // Catch-all binding
+        (*it->second)(node, sibling, this);
+      }
     }
   }
 }
@@ -103,5 +109,28 @@ void PrintBinding::print(MEXP* node, MEXP* sibling, MispBinding *binding) {
   }
 }
 
+/*
+ * TokenDebugBinding
+ */
+
+void TokenDebugBinding::initialize_table() {
+  binding_table["*"] = &TokenDebugBinding::print_token;
+}
+
+void TokenDebugBinding::print_token(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  if (MEXP_IS_ATOM(node)) {
+    (static_cast<TokenDebugBinding*>(binding))->get_os() <<
+      "Token: " << MEXP_TO_STR(node) << std::endl;
+  }
+}
+
+/* 
+ * DebugTokensStrategy
+ */
+
+void DebugTokensStrategy::finalize(MEXP *node, MEXP *sibling) {
+  (static_cast<TokenDebugBinding*>(binding))->get_os() <<
+    "Finalizing: " << MATOM::generate_closer(MEXP_TO_STR(node->val.node->get_parent())) << std::endl;
+}
 
 
