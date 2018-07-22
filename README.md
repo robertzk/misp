@@ -45,7 +45,25 @@ can also remove all ontobindings through `misp --onto= hello.misp`. Such
 a program would have no side effects, as all of its effects on the external
 world have been removed, and thus print nothing.
 
-## LICENSE
+## Running MISP
+
+First, run `make` to create the `bin/misp` executable. You can now feed in files to parse:
+
+```
+bin/misp <(echo 'foo [ baz bux ] {: coo  caw ( jim jum ) :}')
+
+MISP input:
+-------------------------
+foo [ baz bux ] {: coo  caw ( jim jum ) :}
+-------------------------
+
+MISP code parsed:
+-------------------------
+(foo [baz bux] {: coo caw (jim jum) :})
+-------------------------
+```
+
+## License
 
 MISP is licensed under the [MIT License](LICENSE) and freely available for modification,
 distribution or commercial use.
