@@ -1,6 +1,10 @@
 #include "ast.h"
 #include <iostream>
 
+/*
+ * MATOM
+ */
+
 struct MATOM_index_does_not_exist : std::exception { char const* what() const throw(); };
 
 int MATOM::count = 0;
@@ -35,5 +39,28 @@ std::string MATOM::to_str() const {
   } else {
     return it->first;
   }
+}
+
+void MATOM::destroy_symbols() {
+  map.clear();
+  count = 0;
+}
+
+/*
+ * MEXPR
+ */
+
+
+MEXPR::MEXPR(MEXP *_parent) {
+  this->parent = _parent;
+}
+
+bool MEXPR::push_child(MEXP* child) {
+  try {
+    children.push_back(child);
+  } catch(...) {
+    return false;
+  }
+  return true;
 }
 
