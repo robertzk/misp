@@ -47,10 +47,15 @@ world have been removed, and thus it would print nothing.
 
 ## Running MISP
 
-First, run `make` to create the `bin/misp` executable. You can now feed in files to parse:
+First, run `make` to create the `bin/misp` executable.
+
+### Parsing
+
+You can see how MISP parses your program by passing in the `--parse` keyword
+followed by a MISP program file.
 
 ```
-bin/misp <(echo 'foo [ baz bux ] {: coo  caw ( jim jum ) :}')
+bin/misp --parse <(echo 'foo [ baz bux ] {: coo  caw ( jim jum ) :}')
 
 MISP input:
 -------------------------
@@ -66,7 +71,7 @@ MISP code parsed:
 Another example:
 
 ```
-bin/misp <(echo 'a (b c d [f e] {{ a t }} [: x :])')
+bin/misp --parse <(echo 'a (b c d [f e] {{ a t }} [: x :])')
 
 MISP input:
 -------------------------
@@ -82,7 +87,7 @@ MISP code parsed:
 One more example:
 
 ```
-bin/misp examples/example1.misp
+bin/misp --parse examples/nested-groups.misp
 
 MISP input:
 -------------------------
@@ -99,6 +104,17 @@ MISP code parsed:
 -------------------------
 ```
 
+### Executing
+
+You can execute MISP programs by simply calling the function. This will
+use the (rather trivial) default **print ontobinding**, which just
+traverses the AST of a MISP program and prints `X` to standard out whenever
+it sees `(print X)`.
+
+```
+bin/misp examples/nested-hello-world.misp
+helloworld
+```
 
 ## License
 
