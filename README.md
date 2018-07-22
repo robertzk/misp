@@ -153,7 +153,8 @@ bin/misp <(echo 'print (misp [is more powerful] { than you think } )')
 
 ### Debugging
 
-You can debug a MISP program by printing the tokens it sees through the `--debug` flag
+You can debug a MISP program by printing the tokens it sees through the `--debug` flag, which
+runs the program using the `TokenDebugBinding`.
 
 ```
 bin/misp --debug <(echo 'print (misp [is more powerful] { than you think } )')
