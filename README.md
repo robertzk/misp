@@ -178,8 +178,14 @@ Here is a much more complicated example.
 
 ```
 # examples/python-example.misp
-(def substitutedict < d replacement > (
-  (return (call dict (for k d (tuple k (andor (in (el d k) replacement) (el replacement (el d k) ) (el d k) ) ) ) ) )
+(def substitutedict <d replacement> (
+  (return (call dict (
+    for k d (tuple k (
+      andor (in (el d k) replacement)
+            (el replacement (el d k) )
+            (el d k) )
+    )
+  ) ) )
 ) )
 
 (let x {
