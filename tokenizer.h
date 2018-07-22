@@ -2,26 +2,20 @@
 #define tokenizer_h
 
 #include "ast.h"
+#include <vector>
+#include <string>
+#include <stack>
 
 class MexprBuilder {
 private:
   std::string source;
 
-  static bool is_whitespace(char c) {
-    return c == ' ' || c == '\n' || c == '\t' || c == '\r';
-  }
+  static bool is_whitespace(char c);
 
 public:
   MexprBuilder(std::string s) : source(s) { }
-
-  MEXP* parse(bool default_parentheses = false) {
-    for (auto ch : source ) {
-      if (is_whitespace(ch)) { continue; }
-
-    }
-    return new MEXP { { .atom = new MATOM("foo") }, MEXP_TYPE::matom_type };
-  } 
-
+  MEXP* parse(bool default_parentheses = false);
+  std::vector<std::string> tokenize(bool default_parentheses);
 };
 
 #endif
