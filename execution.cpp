@@ -6,7 +6,7 @@
 
 void LTRTraverseStrategy::execute1(MEXP *node, MEXP *sibling) {
   if (MEXP_IS_ATOM(node)) {
-    effect(node);
+    effect(node, sibling);
   } else {
     // Parent -> children tree walk
     execute1(node->val.node->get_parent());
@@ -40,7 +40,7 @@ void LTRAtomPrinterStrategy::execute() {
   os << "\nExecution completed.\n";
 }
 
-void LTRAtomPrinterStrategy::effect(MEXP *node) {
+void LTRAtomPrinterStrategy::effect(MEXP *node, MEXP *sibling) {
   if (MEXP_IS_ATOM(node)) {
     os << "Atom: " << MEXP_TO_STR(node) << std::endl;
   }
@@ -50,6 +50,20 @@ void LTRAtomPrinterStrategy::finalize(MEXP *node, MEXP *sibling) {
   if (MEXP_IS_EXPR(node)) {
     os << "Finalizing: " << MEXP_TO_STR(node->val.node->get_parent()) << std::endl;
   }
+}
+
+/* 
+ * ApplyBindingLTRStrategy
+ */
+
+void ApplyBindingLTRStrategy::effect(MEXP *node, MEXP *sibling) {
+  if (MEXP_IS_ATOM(node)) {
+    this->binding->apply(node, sibling);
+  }
+}
+
+void ApplyBindingLTRStrategy::finalize(MEXP *node, MEXP *sibling) {
+
 }
 
 

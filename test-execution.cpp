@@ -20,8 +20,21 @@ void test_trivial_execution() {
 	}
 }
 
+void test_print_binding() {
+  std::stringstream ss;
+  MEXP *program = (new MexprBuilder("print hello"))->parse();
+  ApplyBindingLTRStrategy(program, new PrintBinding(ss)).execute();
+  assert(ss.str() == "hello");
+
+  ss.str(std::string());
+  MEXP *program2 = (new MexprBuilder("execute (print hello) (print world)"))->parse();
+  ApplyBindingLTRStrategy(program2, new PrintBinding(ss)).execute();
+  assert(ss.str() == "helloworld");
+}
+
 int main(int argc, char** argv) {
   test_trivial_execution();
+  test_print_binding();
 
   return 0;
 }

@@ -14,7 +14,7 @@ public:
   ~MispExecutionStrategy() { }
 
   virtual void execute() = 0;
-  virtual void effect(MEXP *node) = 0;
+  virtual void effect(MEXP *node, MEXP *sibling) = 0;
   virtual void finalize(MEXP *node, MEXP *sibling = NULL) = 0;
 };
 
@@ -37,7 +37,7 @@ public:
   LTRAtomPrinterStrategy(MEXP *_program, std::ostream &_os = std::cout) : LTRTraverseStrategy(_program), os(_os) { }
 
   void execute();
-  void effect(MEXP *node);
+  void effect(MEXP *node, MEXP *sibling = NULL);
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };
 
@@ -50,6 +50,14 @@ protected:
 public:
 
   MispBinding() { }
+  void apply(MEXP *node, MEXP *sibling) {
+    if (MEXP_IS_ATOM(node)) {
+      auto it = this->binding_table.find(node->val.atom->to_str());
+      if (it != this->binding_table.end()) { // Bound lambda
+        (*it->second)(node, sibling, this);
+      }
+    }
+  }
 };
 
 class PrintBinding : public MispBinding {
@@ -74,6 +82,24 @@ public:
   }
 
   std::ostream &get_os() { return this->os; }
+};
+
+class ApplyBindingLTRStrategy : public LTRTraverseStrategy {
+private:
+  MispBinding *binding;
+
+public:
+
+  ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL) : LTRTraverseStrategy(_program) {
+    if (_binding == NULL) {
+      this->binding = new PrintBinding();
+    } else {
+      this->binding = _binding;
+    }
+  }
+
+  void effect(MEXP *node, MEXP *sibling = NULL);
+  void finalize(MEXP *node, MEXP *sibling = NULL);
 };
 
 
