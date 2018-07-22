@@ -17,16 +17,16 @@ MATOM::MATOM(int i) {
 MATOM::MATOM(std::string s) {
   auto it = this->map.find(s);
   if (it == this->map.end()) { // MATOM does not exist yet
-    this->is_encloser = is_encloser_string(s);
-    if (this->is_encloser) {
-      this->closer = generate_closer(s);
-    }
     this->map[s] = this->count;
     this->index = this->count;
     this->count += 1;
   } else { // MATOM exists in map. Create singleton?
-    this->is_encloser = is_encloser_string(s);
     this->index = it->second;
+  }
+
+  this->is_encloser = is_encloser_string(s);
+  if (this->is_encloser) {
+    this->closer = generate_closer(s);
   }
 }
 
@@ -140,7 +140,7 @@ std::string MEXPR::to_str() const {
   if (MEXP_IS_ATOM(parent)) {
     if (parent->val.atom->encloser()) {
       std::string encloser_string = MEXP_TO_STR(parent);
-      simple_paren = encloser_string == "(";
+      simple_paren = encloser_string.size() == 1;
       ss << encloser_string;
     } else {
       ss << '(' << MEXP_TO_STR(parent);
@@ -154,10 +154,11 @@ std::string MEXPR::to_str() const {
   }
 
   if (MEXP_IS_ATOM(parent)) {
-    if (parent->val.atom->encloser() && !simple_paren) {
-      ss << ' ' << parent->val.atom->get_closer();
-    } else {
-      ss << ")";
+    if (parent->val.atom->encloser()) {
+      if (!simple_paren) {
+        ss << ' ';
+      }
+      ss << parent->val.atom->get_closer();
     }
   }
 

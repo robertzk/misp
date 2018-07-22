@@ -22,8 +22,13 @@ MEXP* MexprBuilder::parse(bool default_parentheses) {
 }
 
 MEXP* MexprBuilder::parse_list(std::vector<std::string> tokens, unsigned int &offset) {
-  if (!MATOM::is_encloser_char(tokens[offset][0])) {
+  if (!MATOM::is_encloser_body_char(tokens[offset][0])) {
     return new MEXP { { .atom = new MATOM(tokens[offset++]) }, MEXP_TYPE::matom_type };
+  }
+
+  if (MATOM::is_closer_char(tokens[offset][0])) {
+    // TODO: Unexpected closer! Throw right exception.
+    throw std::exception();
   }
 
   MEXP* encloser = new MEXP { { .atom = new MATOM(tokens[offset]) }, MEXP_TYPE::matom_type };
@@ -31,14 +36,18 @@ MEXP* MexprBuilder::parse_list(std::vector<std::string> tokens, unsigned int &of
   
   std::string expected_closer = MATOM::generate_closer(tokens[offset]);
 
-  offset++;
+  offset += 1;
   while (offset < tokens.size() && tokens[offset] != expected_closer) {
-    if (tokens[offset] == expected_closer) {
-      offset++;
-      return list;
+    if (MATOM::is_closer_char(tokens[offset][0])) {
+      // Should never happen! Invalid closer. TODO: Exception.
+      throw std::exception();
     }
     MEXP *element = this->parse_list(tokens, offset);
     list->val.node->push_child(element);
+  }
+
+  if (tokens[offset] == expected_closer) {
+    offset += 1;
   }
 
   if (false && offset < tokens.size()) { // TODO: Figure this out.

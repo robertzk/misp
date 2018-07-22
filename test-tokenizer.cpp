@@ -24,8 +24,6 @@ void test_simple_list() {
 
 void test_nested_list() {
   MEXP *el  = (new MexprBuilder("foo [baz bux] {: coo caw (jim jum) :}"))->parse();
-  std::cout << "*" << MEXP_TO_STR( el->val.node->get_children()->at(1) ) << "&";
-  std::cout << MEXP_TO_STR(el) << std::endl;
   assert(MEXP_TO_STR(el) == "(foo [baz bux] {: coo caw (jim jum) :})");
 }
 
