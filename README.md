@@ -153,7 +153,6 @@ bin/misp <(echo 'print (misp [is more powerful] { than you think } )')
 
 ## Transpilation to other languages
 
-
 MISP is a great harness for on-the-fly transpilation to other languages. This
 can be done by constructing an appropriate "binding" and then tethering the
 MISP program's AST to the underlying execution engine.
@@ -165,6 +164,12 @@ available through the `misp` executable using the `--shell` flag:
 bin/misp --shell <(echo "(echo hello)\n(echo world)")
 hello
 world
+```
+
+We can also transpile MISP programs to Python.
+
+```
+bin/misp --python <(echo "(import subprocess)\n(x subprocess call (string ls))")
 ```
 
 ### Debugging
