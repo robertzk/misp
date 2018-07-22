@@ -60,10 +60,28 @@ void MATOM::destroy_symbols() {
   count = 0;
 }
 
+bool MATOM::is_encloser_char(char ch) {
+  return ch == '(' || ch == '[' || ch == '{' || ch == '<';
+}
+
+bool MATOM::is_closer_char(char ch) {
+  return ch == ')' || ch == ']' || ch == '}' || ch == '>';
+}
+
 bool MATOM::is_encloser_string(std::string s) {
   // TODO: Exclude strings like "(foo"
   for (auto ch : s) {
-    if (ch == '(' || ch == '[' || ch == '{' || ch == '<') {
+    if (is_encloser_char(ch)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool MATOM::is_closer_string(std::string s) {
+  // TODO: Exclude strings like "foo)"
+  for (auto ch : s) {
+    if (is_closer_char(ch)) {
       return true;
     }
   }
