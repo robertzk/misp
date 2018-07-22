@@ -15,9 +15,10 @@ int main(int argc, char** argv) {
                            std::istreambuf_iterator<char>());
 
 
-  std::cout << "MISP input: " << misp_source << "\n";
-  MEXP *code = (new MexprBuilder(misp_source))->parse(false);
-  std::cout << "MISP code parsed: \n" << MEXP_TO_STR(code) << "\n";
+  char sep[26] = "-------------------------";
+  std::cout << "MISP input:\n" << sep << "\n" << misp_source << sep << "\n\n";
+  MEXP *code = (new MexprBuilder(misp_source))->parse();
+  std::cout << "MISP code parsed: \n" << sep << "\n" << MEXP_TO_STR(code) << "\n" << sep << "\n";
 
   return 0;
 }

@@ -26,8 +26,8 @@ void test_nested_list() {
   MEXP *el  = (new MexprBuilder("foo [baz bux] {: coo caw (jim jum) :}"))->parse();
   assert(MEXP_TO_STR(el) == "(foo [baz bux] {: coo caw (jim jum) :})");
 
-  MEXP *el2 = (new MexprBuilder("(foo [baz bux] {: coo caw (jim jum) :} )"))->parse();
-  assert(MEXP_TO_STR(el2) == "(foo [baz bux] {: coo caw (jim jum) :})");
+  //MEXP *el2 = (new MexprBuilder("(foo [baz bux] {: coo caw (jim jum) :} )"))->parse();
+  //assert(MEXP_TO_STR(el2) == "(foo [baz bux] {: coo caw (jim jum) :})");
 }
 
 int main(int argc, char** argv) {
