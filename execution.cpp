@@ -56,6 +56,14 @@ void LTRAtomPrinterStrategy::finalize(MEXP *node, MEXP *sibling) {
  * ApplyBindingLTRStrategy
  */
 
+ApplyBindingLTRStrategy::ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding) {
+  if (_binding == NULL) {
+    this->binding = new PrintBinding();
+  } else {
+    this->binding = _binding;
+  }
+}
+
 void ApplyBindingLTRStrategy::effect(MEXP *node, MEXP *sibling) {
   if (MEXP_IS_ATOM(node)) {
     this->binding->apply(node, sibling);
@@ -63,7 +71,37 @@ void ApplyBindingLTRStrategy::effect(MEXP *node, MEXP *sibling) {
 }
 
 void ApplyBindingLTRStrategy::finalize(MEXP *node, MEXP *sibling) {
-
+   // No op.
 }
+
+/*
+ * MispBinding
+ */
+
+void MispBinding::apply(MEXP *node, MEXP *sibling) {
+  if (MEXP_IS_ATOM(node)) {
+    auto it = this->binding_table.find(node->val.atom->to_str());
+    if (it != this->binding_table.end()) { // Bound lambda
+      (*it->second)(node, sibling, this);
+    }
+  }
+}
+
+/*
+ * PrintBinding
+ */
+
+void PrintBinding::initialize_table() {
+  binding_table["print"] = &PrintBinding::print;
+}
+
+void PrintBinding::print(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  if (MEXP_IS_ATOM(node) && node->val.atom->to_str() == "print") {
+    if (sibling != NULL) {
+      (static_cast<PrintBinding*>(binding))->get_os() << MEXP_TO_STR(sibling);
+    }
+  }
+}
+
 
 

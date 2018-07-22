@@ -50,36 +50,18 @@ protected:
 public:
 
   MispBinding() { }
-  void apply(MEXP *node, MEXP *sibling) {
-    if (MEXP_IS_ATOM(node)) {
-      auto it = this->binding_table.find(node->val.atom->to_str());
-      if (it != this->binding_table.end()) { // Bound lambda
-        (*it->second)(node, sibling, this);
-      }
-    }
-  }
+  void apply(MEXP *node, MEXP *sibling);
 };
 
 class PrintBinding : public MispBinding {
 private:
   std::ostream &os;
 
-  void initialize_table() {
-    binding_table["print"] = &PrintBinding::print;
-  }
-
-  static void print(MEXP* node, MEXP* sibling, MispBinding *binding) {
-    if (MEXP_IS_ATOM(node) && node->val.atom->to_str() == "print") {
-      if (sibling != NULL) {
-        (static_cast<PrintBinding*>(binding))->get_os() << MEXP_TO_STR(sibling);
-      }
-    }
-  }
+  void initialize_table();
+  static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
 
 public:
-  PrintBinding(std::ostream &_os = std::cout) : MispBinding(), os(_os) {
-    initialize_table();
-  }
+  PrintBinding(std::ostream &_os = std::cout) : MispBinding(), os(_os) { initialize_table(); }
 
   std::ostream &get_os() { return this->os; }
 };
@@ -90,13 +72,7 @@ private:
 
 public:
 
-  ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL) : LTRTraverseStrategy(_program) {
-    if (_binding == NULL) {
-      this->binding = new PrintBinding();
-    } else {
-      this->binding = _binding;
-    }
-  }
+  ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_binding = NULL) : LTRTraverseStrategy(_program);
 
   void effect(MEXP *node, MEXP *sibling = NULL);
   void finalize(MEXP *node, MEXP *sibling = NULL);
