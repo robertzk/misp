@@ -63,6 +63,8 @@ MISP code parsed:
 -------------------------
 ```
 
+Another example:
+
 ```
 bin/misp <(echo 'a (b c d [f e] {{ a t }} [: x :]')
 
