@@ -32,6 +32,8 @@ private:
   static std::map<std::string,int> map;
 
   int index;
+  bool is_encloser;
+  std::string closer;
 
   MATOM(int i);
 
@@ -39,10 +41,15 @@ public:
 
   MATOM(std::string s);
   int get_index() const;
+  std::string get_closer() const;
+  bool get_is_encloser() { return this->is_encloser; }; 
+  bool encloser() { return this->get_is_encloser(); }
   std::string to_str() const;
 
   static int get_count() { return count; };
   static void destroy_symbols();
+  static bool is_encloser_string(std::string s);
+  static std::string generate_closer(std::string s);
 };
 
 class MEXPR {
@@ -57,16 +64,7 @@ public:
   MEXP *get_parent() { return this->parent; }
   int num_children() const { return this->children.size(); }
 
-  std::string to_str() const {
-    std::stringstream ss;
-    ss << '(' << MEXP_TO_STR(parent);
-
-    for (auto child : this->children) {
-      ss << ' ' << MEXP_TO_STR(child);
-    }
-    ss << ')';
-    return ss.str();
-  }
+  std::string to_str() const;
 };
 
 #endif

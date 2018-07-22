@@ -52,8 +52,39 @@ void test_mexpr() {
   MATOM::destroy_symbols();
 }
 
+void test_encloser() {
+  assert(MATOM::is_encloser_string("[:"));
+  assert(MATOM::is_encloser_string("|(!"));
+  assert(MATOM::is_encloser_string("_{?"));
+  assert(MATOM::is_encloser_string("<<"));
+  assert(!MATOM::is_encloser_string("foo"));
+  assert(MATOM::generate_closer("({[<") == ">]})");
+  assert(MATOM::generate_closer("(ba:") == ":ab)");
+
+  MATOM *enc = new MATOM("({");
+  assert(enc->get_is_encloser());
+  assert(enc->get_closer() == "})");
+
+  MEXP *foo = new MEXP { { .atom = new MATOM("foo") }, MEXP_TYPE::matom_type };
+  MEXP *bar = new MEXP { { .atom = new MATOM("bar") }, MEXP_TYPE::matom_type };
+  MEXP *baz = new MEXP { { .atom = new MATOM("baz") }, MEXP_TYPE::matom_type };
+
+  MEXPR *list = new MEXPR(new MEXP { { .atom = enc }, MEXP_TYPE::matom_type });
+  list->push_child(foo);
+  list->push_child(bar);
+  list->push_child(baz);
+
+  MEXP *expr = new MEXP { { .node = list }, MEXP_TYPE::mexpr_type };
+
+  std::cout << "encloser expr: " << MEXP_TO_STR(expr) << "\n";
+  assert(MEXP_TO_STR(expr) == "({ foo bar baz })"); 
+
+  MATOM::destroy_symbols();
+}
+
 int main(int argc, char** argv) {
   test_matom();
+  test_encloser();
   test_mexpr();
 
   return 0;
