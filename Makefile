@@ -1,10 +1,10 @@
 # osiris binary is not always up-to-date despite what make thinks so label as phony
-.PHONY: test misp deps
+.PHONY: misp tests deps test-ast test-tokenizer
 
 all: misp
 
 misp:
-	clang++ -Wall -std=c++11 misp.cpp ast.cpp -o bin/misp
+	clang++ -Wall -std=c++11 ast.cpp tokenizer.cpp misp.cpp -o bin/misp
 
 deps:
 	deps
