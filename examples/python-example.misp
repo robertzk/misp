@@ -1,6 +1,6 @@
-(def substitutedict < dict replacement > {
+(def substitutedict < dict replacement > (
 	(return (x dict (for k d (tuple k (andor (in (el d k) replacement) (el replacement (el d k) ) ) ) ) ) ) 
-} )
+) )
 
 (let x {
   ( (string foo) (string bar) )

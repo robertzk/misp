@@ -24,6 +24,11 @@ bool is_square_bracket_expression(MEXP *node) {
          MEXP_TO_STR(node->val.node->get_parent()) == "[";
 }
 
+bool is_brace_bracket_expression(MEXP *node) {
+  return MEXP_IS_EXPR(node) && is_atom(node->val.node->get_parent()) &&
+         MEXP_TO_STR(node->val.node->get_parent()) == "{";
+}
+
 bool is_encloser_atom(MEXP *node) {
   return (is_atom(node) && node->val.atom->encloser());
 }
@@ -90,6 +95,8 @@ void PythonExecutionBinding::apply(MEXP *node, MEXP *sibling) {
   if (skipcount == 0) {
     // TODO: Cache the [ operator
     if (is_square_bracket_expression(node)) {
+      make_list(node, sibling, this);     
+    } else if (is_brace_bracket_expression(node)) {
       make_dict(node, sibling, this);     
     } else {
       MispBinding::apply(node, sibling);
@@ -184,16 +191,25 @@ void PythonExecutionBinding::print(MEXP* node, MEXP* sibling, MispBinding *bindi
   std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
   output << "print ";
   // TODO: Error if arity > 2
-  if (is_atomic_expression(node->val.node->get_children()->at(1))) {
-    static_cast<PythonExecutionBinding*>(binding)->apply(node->val.node->get_children()->at(1), NULL);
-    static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
+  auto cast_binding = static_cast<PythonExecutionBinding*>(binding);
+  auto printed_node = node->val.node->get_children()->at(1);
+
+  if (is_square_bracket_expression(printed_node) ||
+      is_brace_bracket_expression(printed_node) ||
+      is_atomic_expression(printed_node)) {
+    cast_binding->apply(printed_node, NULL);
+    cast_binding->increment_skipcount();
+  } else if (is_atom(printed_node)) {
+    output << MEXP_TO_STR(printed_node);
   } else {
-    output << MEXP_TO_STR(node->val.node->get_children()->at(1));
+    // TODO: Check if this is actually a nested expression. Should we actually throw?
+    std::cerr << "Nested non-atomic expression in print";
+    throw std::exception();
   }
 	output << ";\n";
 }
 
-void PythonExecutionBinding::make_dict(MEXP* node, MEXP* sibling, MispBinding *binding) {
+void PythonExecutionBinding::make_list(MEXP* node, MEXP* sibling, MispBinding *binding) {
   std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
   output << "[";
 
@@ -210,12 +226,44 @@ void PythonExecutionBinding::make_dict(MEXP* node, MEXP* sibling, MispBinding *b
       static_cast<PythonExecutionBinding*>(binding)->increment_skipcount();
     } else {
       // TODO: Nested non-atomic expression... what to do?
-      std::cerr << "Nested non-atomic expression in make_dict";
+      std::cerr << "Nested non-atomic expression in make_list";
       throw std::exception();
     }
   }
 
   output << "]";
+}
+
+void PythonExecutionBinding::make_dict(MEXP* node, MEXP* sibling, MispBinding *binding) {
+  std::stringstream &output = static_cast<PythonExecutionBinding*>(binding)->get_pyprogram();
+  output << "{";
+
+  auto children = node->val.node->get_children();
+  for (unsigned int i = 0; i < children->size(); i++) {
+    if (i > 0) {
+      output << ", ";
+    }
+    if (is_atom(children->at(i)) || is_atomic_expression(children->at(i))) {
+      // TODO: Nested non-atomic expression... what to do?
+      std::cerr << "Cannot construct a dictionary using atoms or atomic expressions";
+      throw std::exception();
+    }
+
+    // TODO: Check children are arity 2
+    auto cast_binding = static_cast<PythonExecutionBinding*>(binding);
+
+    // TODO: Handle atoms here too instead of (string foo)
+    cast_binding->apply(children->at(i)->val.node->get_children()->at(0), NULL);
+    output << ": ";
+    cast_binding->apply(children->at(i)->val.node->get_children()->at(1), NULL);
+
+    // TODO: I think this has problems... what if we need to do nested expression evaluation
+    // later in the parent expression?
+    cast_binding->increment_skipcount();
+    cast_binding->increment_skipcount(); 
+  }
+
+  output << "}";
 }
 
 void PythonExecutionBinding::make_string(MEXP* node, MEXP* sibling, MispBinding *binding) {
