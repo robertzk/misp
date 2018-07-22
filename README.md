@@ -127,6 +127,11 @@ traverses the AST of a MISP program and prints `X` to standard out whenever
 it sees `(print X)`.
 
 ```
+bin/misp <(echo 'print helloworld')
+helloworld
+```
+
+```
 bin/misp examples/nested-hello-world.misp
 helloworld
 ```
