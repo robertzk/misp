@@ -166,11 +166,56 @@ hello
 world
 ```
 
+### Transpiling to Python
+
 We can also transpile MISP programs to Python.
 
 ```
 bin/misp --python <(echo "(import subprocess)\n(x subprocess call (string ls))")
 ```
+
+Here is a much more complicated example.
+
+```
+# examples/python-example.misp
+(def substitutedict < d replacement > (
+  (return (call dict (for k d (tuple k (andor (in (el d k) replacement) (el replacement (el d k) ) (el d k) ) ) ) ) )
+) )
+
+(let x {
+  ( (string foo) (string bar) )
+  ( (string bum) (string butt) )
+} )
+
+(let y {
+  ( (string butt) (string poo) )
+} )
+
+(print (call substitutedict x y) )
+```
+
+The equivalent Python program would be:
+
+```py
+# examples/python-example.py
+def substitute_dict(d, replacement):
+  return dict( (k, ((d[k] in replacement) and replacement[d[k]] or d[k])) for k in d )
+
+x = { "foo": "bar", "bum": "butt" }
+y = { "butt": "poo" }
+
+print substitute_dict(x, y)
+```
+
+Let's try to run it using MISP.
+
+```
+bin/misp --python examples/python-example.misp
+{'foo': 'bar', 'bum': 'poo'}
+```
+
+Cool! We just ran a Python program using MISP by creating the right ontobinding.
+See the `PythonExecutionStrategy` and `PythonExecutionBinding` classes in the codebase.
 
 ### Debugging
 
