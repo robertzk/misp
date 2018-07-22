@@ -125,7 +125,7 @@ MISP code parsed:
 ### Executing
 
 You can execute MISP programs by simply passing the filename to the misp executable.
-Buy default, this will use the (rather trivial) **print ontobinding**, which just
+By default, this will use the (rather trivial) **print ontobinding**, which just
 traverses the AST of a MISP program and prints `X` to standard out whenever
 it sees `(print X)`.
 
