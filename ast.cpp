@@ -1,5 +1,4 @@
 #include "ast.h"
-#include <iostream>
 
 /*
  * MATOM
@@ -58,6 +57,16 @@ std::string MATOM::to_str() const {
 void MATOM::destroy_symbols() {
   map.clear();
   count = 0;
+}
+
+bool MATOM::is_encloser_body_char(char ch) {
+  static char encloser_body_chars[31] = "`~!@#$%^&*()_+-={}[]|\\:;?/.,<>";
+  for (unsigned int i = 0; i < 31; i++) {
+    if (ch == encloser_body_chars[i]) {
+      return true;
+    }
+  }
+  return false;
 }
 
 bool MATOM::is_encloser_char(char ch) {

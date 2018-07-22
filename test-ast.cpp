@@ -53,6 +53,10 @@ void test_mexpr() {
 }
 
 void test_encloser() {
+  assert(MATOM::is_encloser_body_char('*'));
+  assert(MATOM::is_encloser_body_char('/'));
+  assert(MATOM::is_encloser_body_char('&'));
+
   assert(MATOM::is_encloser_string("[:"));
   assert(MATOM::is_encloser_string("|(!"));
   assert(MATOM::is_encloser_string("_{?"));

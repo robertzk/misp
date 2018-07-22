@@ -49,6 +49,7 @@ public:
   static int get_count() { return count; };
   static void destroy_symbols();
   static bool is_encloser_char(char ch);
+  static bool is_encloser_body_char(char ch);
   static bool is_closer_char(char ch);
   static bool is_encloser_string(std::string s);
   static bool is_closer_string(std::string s);
