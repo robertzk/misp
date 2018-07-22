@@ -131,6 +131,11 @@ bin/misp examples/nested-hello-world.misp
 helloworld
 ```
 
+```
+bin/misp <(echo '(print this) is a (print misp) program')
+thismisp
+```
+
 ## License
 
 MISP is licensed under the [MIT License](LICENSE) and freely available for modification,
