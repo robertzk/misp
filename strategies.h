@@ -74,7 +74,7 @@ public:
 class PythonExecutionStrategy : public ApplyBindingLTRStrategy {
 protected:
   std::ostream &pystream;
-	std::string filename;
+  std::string filename;
 
 public:
   PythonExecutionStrategy(MEXP *_program, std::ostream &_os = std::cout, std::ostream &_pystream = std::cout, std::string _filename = "") : 
