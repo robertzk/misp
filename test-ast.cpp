@@ -83,6 +83,14 @@ void test_encloser() {
   std::cout << "encloser expr: " << MEXP_TO_STR(expr) << "\n";
   assert(MEXP_TO_STR(expr) == "({ foo bar baz })"); 
 
+  MEXPR *list2 = new MEXPR(new MEXP { { .atom = new MATOM("(") }, MEXP_TYPE::matom_type });
+  list2->push_child(baz);
+  list2->push_child(foo);
+  list2->push_child(bar);
+
+  expr->val.node->push_child(new MEXP { { .node = list2 }, MEXP_TYPE::mexpr_type });
+  assert(MEXP_TO_STR(expr) == "({ foo bar baz (baz foo bar) })"); 
+
   MATOM::destroy_symbols();
 }
 

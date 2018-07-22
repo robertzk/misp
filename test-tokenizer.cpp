@@ -22,9 +22,17 @@ void test_simple_list() {
   assert(MEXP_TO_STR(el3) == "<:< hey there >:>");
 }
 
+void test_nested_list() {
+  MEXP *el  = (new MexprBuilder("foo [baz bux] {: coo caw (jim jum) :}"))->parse();
+  std::cout << "*" << MEXP_TO_STR( el->val.node->get_children()->at(1) ) << "&";
+  std::cout << MEXP_TO_STR(el) << std::endl;
+  assert(MEXP_TO_STR(el) == "(foo [baz bux] {: coo caw (jim jum) :})");
+}
+
 int main(int argc, char** argv) {
   test_atom();
   test_simple_list();
+  test_nested_list();
 
   return 0;
 }
