@@ -66,7 +66,7 @@ MISP code parsed:
 Another example:
 
 ```
-bin/misp <(echo 'a (b c d [f e] {{ a t }} [: x :]')
+bin/misp <(echo 'a (b c d [f e] {{ a t }} [: x :])')
 
 MISP input:
 -------------------------
@@ -78,6 +78,27 @@ MISP code parsed:
 (a (b c d [f e] {{ a t }} [: x :]))
 -------------------------
 ```
+
+One more example:
+
+```
+bin/misp examples/example1.misp
+
+MISP input:
+-------------------------
+this is {
+  my cool program (
+    and it goes like this [a b c]
+	)
+}
+-------------------------
+
+MISP code parsed:
+-------------------------
+(this is {my cool program (and it goes like this [a b c])})
+-------------------------
+```
+
 
 ## License
 
