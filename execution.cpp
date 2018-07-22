@@ -83,7 +83,7 @@ void MispBinding::apply(MEXP *node, MEXP *sibling) {
   if (MEXP_IS_ATOM(node)) {
     routing_node = node;
   } else {
-    routing_node = node->val.node->get_parent();
+    routing_node = node->val.node->get_children()->at(0);
   }
 
   if (!MEXP_IS_ATOM(routing_node)) {

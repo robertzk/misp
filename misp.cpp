@@ -1,5 +1,11 @@
 #include "misp.h"
 
+// For temp files: https://en.cppreference.com/w/cpp/io/c/tmpfile
+#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+
 int main(int argc, char** argv) {
   process_flags(params_to_vector(argc, argv));
 
@@ -33,6 +39,17 @@ void process_flags(std::vector<std::string> flags) {
   } else if (svector_contains(flags, "--shell")) {
     MEXP *code = (new MexprBuilder(misp_source))->parse();
     ShellExecutionStrategy(code).execute();
+  } else if (svector_contains(flags, "--python")) {
+    MEXP *code = (new MexprBuilder(misp_source))->parse();
+    std::string tempfilename = std::tmpnam(nullptr);
+    std::ofstream tempfile = std::ofstream(tempfilename);
+
+    // TODO: Add --debug interaction: std::cout << "Executing into: " << tempfilename << "\n";
+    PythonExecutionStrategy(code, std::cout, tempfile, tempfilename).execute();
+    tempfile.close();
+
+    // TODO: Add --debug interaction: std::cout << "Executing cmd: " << std::string("python ") + tempfilename << "\n";
+    std::cout << ShellExecutionBinding::shell_exec(std::string("python ") + tempfilename);
   } else if (svector_contains(flags, "--debug")) {
     MEXP *code = (new MexprBuilder(misp_source))->parse();
     DebugTokensStrategy(code).execute();
