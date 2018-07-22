@@ -43,7 +43,7 @@ public:
   int get_index() const;
   std::string get_closer() const;
   bool get_is_encloser() { return this->is_encloser; }; 
-  bool encloser() { return this->get_is_encloser(); }
+  bool encloser() { return this->is_encloser; }
   std::string to_str() const;
 
   static int get_count() { return count; };
@@ -66,6 +66,7 @@ public:
   bool push_child(MEXP* child);
 
   MEXP *get_parent() { return this->parent; }
+  std::vector<MEXP*>* get_children() { return &this->children; }
   int num_children() const { return this->children.size(); }
 
   std::string to_str() const;

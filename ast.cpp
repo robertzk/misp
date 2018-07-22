@@ -25,6 +25,7 @@ MATOM::MATOM(std::string s) {
     this->index = this->count;
     this->count += 1;
   } else { // MATOM exists in map. Create singleton?
+    this->is_encloser = is_encloser_string(s);
     this->index = it->second;
   }
 }
@@ -135,20 +136,25 @@ bool MEXPR::push_child(MEXP* child) {
 std::string MEXPR::to_str() const {
   std::stringstream ss;
 
+  bool simple_paren = false;
   if (MEXP_IS_ATOM(parent)) {
     if (parent->val.atom->encloser()) {
-      ss << MEXP_TO_STR(parent);
+      std::string encloser_string = MEXP_TO_STR(parent);
+      simple_paren = encloser_string == "(";
+      ss << encloser_string;
     } else {
       ss << '(' << MEXP_TO_STR(parent);
     }
   }
 
+  bool first = true;
   for (auto child : this->children) {
-    ss << ' ' << MEXP_TO_STR(child);
+    ss << (first && simple_paren ? "" : " ") << MEXP_TO_STR(child);
+    first = false;
   }
 
   if (MEXP_IS_ATOM(parent)) {
-    if (parent->val.atom->encloser()) {
+    if (parent->val.atom->encloser() && !simple_paren) {
       ss << ' ' << parent->val.atom->get_closer();
     } else {
       ss << ")";

@@ -6,57 +6,53 @@ bool MexprBuilder::is_whitespace(char c) {
 
 MEXP* MexprBuilder::parse(bool default_parentheses) {
   std::vector<std::string> tokens = tokenize(default_parentheses);
-  unsigned int offset = 0;
 
   if (tokens.size() == 0) {
     return NULL;
   }
 
-  if (!MATOM::is_encloser_char(tokens[0][0])) {
+  if (!MATOM::is_encloser_char(tokens[offset][0])) {
     // TODO right exception
-    std::cerr << "Expected encloser token, got " << tokens[0] << std::endl;
+    std::cerr < "Expected encloser token, got " << tokens[offset] << std::endl;
     throw std::exception();
   }
 
-  return parse_list(tokens, offset);
+  return parse_list(tokens);
 }
 
-MEXP* MexprBuilder::parse_list(std::vector<std::string> tokens, unsigned int &offset) {
+MEXP* MexprBuilder::parse_list(std::vector<string> tokens, int offset = 0) {
   if (!MATOM::is_encloser_char(tokens[offset][0])) {
-    return new MEXP { { .atom = new MATOM(tokens[offset++]) }, MEXP_TYPE::matom_type };
+    return new MEXP { { .atom = tokens[offset] }, MEXP_TYPE::matom_type };
   }
 
-  MEXP* encloser = new MEXP { { .atom = new MATOM(tokens[offset]) }, MEXP_TYPE::matom_type };
-  MEXP* list  = new MEXP { { .node = new MEXPR(encloser) }, MEXP_TYPE::mexpr_type };
+  new MEXP* encloser = new MEXP { { .atom = tokens[offset] }, MEXP_TYPE::matom_type };
   
   std::string expected_closer = MATOM::generate_closer(tokens[offset]);
+  unsigned int i = offset + 1;
+  while (i < tokens.size() && tokens[i] != expected_closer) {
+    if (tokens[i] == expected_closer) {
 
-  offset++;
-  while (offset < tokens.size() && tokens[offset] != expected_closer) {
-    if (tokens[offset] == expected_closer) {
-      offset++;
-      return list;
     }
-    MEXP *element = this->parse_list(tokens, offset);
-    list->val.node->push_child(element);
+    encloser.push_back(parse_list(tokens));
+    i++;
   }
 
-  if (false && offset < tokens.size()) { // TODO: Figure this out.
+  if (false && i < tokens.size()) { // TODO: Figure this out.
     // Premature closer!
-    std::cerr << "Premature closer. Not sure what to do with rest of token sequence.\n";
-    throw std::exception();
+    std::cerr < "Premature closer. Not sure what to do with rest of token sequence.\n";
+    throw std::exception;
   }
 
-  return list;
+  return encloser;
 }
 
 std::vector<std::string> MexprBuilder::tokenize(bool default_parentheses) {
   std::vector<std::string> tokens;
-  std::stack<std::string> expected_closer;
-
   if (default_parentheses) {
     tokens.push_back("(");
   }
+
+  std::stack<std::string> expected_closer;
 
   unsigned int i = 0;
   for (i = 0; i < source.size(); i++) {
@@ -65,13 +61,12 @@ std::vector<std::string> MexprBuilder::tokenize(bool default_parentheses) {
     
     std::string token;
 
-    if (MATOM::is_encloser_body_char(ch)) {
+    if (MATOM::is_encloser_char(ch)) {
       bool is_closer = MATOM::is_closer_char(ch);
 
       while (MATOM::is_encloser_body_char(ch)) {
         token.push_back(ch);
         i++;
-        if (i >= source.size()) { break; }
         ch = source[i];
       }
       
