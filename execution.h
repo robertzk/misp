@@ -90,14 +90,5 @@ public:
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };
 
-class DebugTokensStrategy : public ApplyBindingLTRStrategy {
-public:
-  DebugTokensStrategy(MEXP *_program, std::ostream &_os = std::cout) : 
-    ApplyBindingLTRStrategy(_program, new TokenDebugBinding(_os)) {
-  }
-
-  void finalize(MEXP *node, MEXP *sibling = NULL);
-};
-
 #endif
 

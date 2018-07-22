@@ -3,6 +3,7 @@
 
 #include "execution.h"
 
+bool is_atom(MEXP *node);
 bool is_encloser_atom(MEXP *node);
 bool is_symbolic_atom(MEXP *node);
 bool is_atomic_expression(MEXP *node);
@@ -41,8 +42,9 @@ protected:
 
   void initialize_table();
   static void import(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void apply_function(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void apply_method(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void make_string(MEXP* node, MEXP* sibling, MispBinding *binding);
+  static void call_function(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
   static void unknown_binding(MEXP* node, MEXP* sibling, MispBinding *binding);
 
@@ -69,6 +71,16 @@ public:
     ApplyBindingLTRStrategy(_program, new PythonExecutionBinding(_os)), pystream(_pystream), filename(_filename) { }
 
   void execute();
+  void effect(MEXP *node, MEXP *sibling = NULL);
+  void finalize(MEXP *node, MEXP *sibling = NULL);
+};
+
+class DebugTokensStrategy : public ApplyBindingLTRStrategy {
+public:
+  DebugTokensStrategy(MEXP *_program, std::ostream &_os = std::cout) : 
+    ApplyBindingLTRStrategy(_program, new TokenDebugBinding(_os)) {
+  }
+
   void effect(MEXP *node, MEXP *sibling = NULL);
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };

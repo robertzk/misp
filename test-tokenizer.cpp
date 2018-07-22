@@ -20,6 +20,9 @@ void test_simple_list() {
 
   MEXP *el3 = (new MexprBuilder("<:< hey  there >:>"))->parse(false);
   assert(MEXP_TO_STR(el3) == "<:< hey there >:>");
+
+  MEXP *el4 = (new MexprBuilder("(foo)"))->parse();
+  assert(MEXP_TO_STR(el4) == "((foo))");
 }
 
 void test_nested_list() {

@@ -67,6 +67,7 @@ ApplyBindingLTRStrategy::ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_b
 
 void ApplyBindingLTRStrategy::effect(MEXP *node, MEXP *sibling) {
   // TODO: Figure out if to use a param for leaf-only walks.
+  // TODO: Also figure out polymorphism issues...
   this->binding->apply(node, sibling);
 }
 
@@ -134,14 +135,4 @@ void TokenDebugBinding::print_token(MEXP* node, MEXP* sibling, MispBinding *bind
       "Token: " << MEXP_TO_STR(node) << std::endl;
   }
 }
-
-/* 
- * DebugTokensStrategy
- */
-
-void DebugTokensStrategy::finalize(MEXP *node, MEXP *sibling) {
-  (static_cast<TokenDebugBinding*>(binding))->get_os() <<
-    "Finalizing: " << MATOM::generate_closer(MEXP_TO_STR(node->val.node->get_parent())) << std::endl;
-}
-
 
