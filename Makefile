@@ -15,3 +15,7 @@ tests:
 test-ast:
 	clang++ -Wall -std=c++11 ast.cpp test-ast.cpp -o bin/test-ast
 	bin/test-ast
+
+test-tokenizer:
+	clang++ -Wall -std=c++11 ast.cpp tokenizer.cpp test-tokenizer.cpp -o bin/test-tokenizer
+	bin/test-tokenizer
