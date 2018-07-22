@@ -9,6 +9,7 @@
 #include <streambuf>
 #include <algorithm>
 #include "execution.h"
+#include "strategies.h"
 
 int main(int argc, char** argv);
 

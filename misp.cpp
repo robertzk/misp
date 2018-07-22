@@ -30,6 +30,9 @@ void process_flags(std::vector<std::string> flags) {
     std::cout << "MISP input:\n" << sep << "\n" << misp_source << sep << "\n\n";
     MEXP *code = (new MexprBuilder(misp_source))->parse();
     std::cout << "MISP code parsed: \n" << sep << "\n" << MEXP_TO_STR(code) << "\n" << sep << "\n";
+  } else if (svector_contains(flags, "--shell")) {
+    MEXP *code = (new MexprBuilder(misp_source))->parse();
+    ShellExecutionStrategy(code).execute();
   } else if (svector_contains(flags, "--debug")) {
     MEXP *code = (new MexprBuilder(misp_source))->parse();
     DebugTokensStrategy(code).execute();

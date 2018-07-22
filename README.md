@@ -151,6 +151,22 @@ bin/misp <(echo 'print (misp [is more powerful] { than you think } )')
 (misp [is more powerful] {than you think})%
 ```
 
+## Transpilation to other languages
+
+
+MISP is a great harness for on-the-fly transpilation to other languages. This
+can be done by constructing an appropriate "binding" and then tethering the
+MISP program's AST to the underlying execution engine.
+
+For example, we can run a shell program using the `ShellExecutionBinding`,
+available through the `misp` executable using the `--shell` flag:
+
+```
+bin/misp --shell <(echo "(echo hello)\n(echo world)")
+hello
+world
+```
+
 ### Debugging
 
 You can debug a MISP program by printing the tokens it sees through the `--debug` flag, which

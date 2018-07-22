@@ -9,6 +9,7 @@ void LTRTraverseStrategy::execute1(MEXP *node, MEXP *sibling) {
     effect(node, sibling);
   } else {
     // Parent -> children tree walk
+    effect(node, sibling); // TODO: Figure out whether to support a parameter to only step through leaves.
     execute1(node->val.node->get_parent());
     auto children = node->val.node->get_children();
     for (unsigned int i = 0; i < children->size(); i++) {
@@ -65,9 +66,8 @@ ApplyBindingLTRStrategy::ApplyBindingLTRStrategy(MEXP *_program, MispBinding *_b
 }
 
 void ApplyBindingLTRStrategy::effect(MEXP *node, MEXP *sibling) {
-  if (MEXP_IS_ATOM(node)) {
-    this->binding->apply(node, sibling);
-  }
+  // TODO: Figure out if to use a param for leaf-only walks.
+  this->binding->apply(node, sibling);
 }
 
 void ApplyBindingLTRStrategy::finalize(MEXP *node, MEXP *sibling) {
@@ -79,16 +79,27 @@ void ApplyBindingLTRStrategy::finalize(MEXP *node, MEXP *sibling) {
  */
 
 void MispBinding::apply(MEXP *node, MEXP *sibling) {
+  MEXP *routing_node;
   if (MEXP_IS_ATOM(node)) {
-    auto it = this->binding_table.find(node->val.atom->to_str());
-    if (it != this->binding_table.end()) { // Bound lambda
+    routing_node = node;
+  } else {
+    routing_node = node->val.node->get_parent();
+  }
+
+  if (!MEXP_IS_ATOM(routing_node)) {
+    // Something horrible happened! apply() got called on a nested list whose 
+    // parent is not an atom.
+    throw std::exception();
+  }
+
+  auto it = this->binding_table.find(routing_node->val.atom->to_str());
+  if (it != this->binding_table.end()) { // Bound lambda
+    (*it->second)(node, sibling, this);
+  } else {
+    // TODO: Cache * route
+    it = this->binding_table.find("*");
+    if (it != this->binding_table.end()) { // Catch-all binding
       (*it->second)(node, sibling, this);
-    } else {
-      // TODO: Cache * route
-      it = this->binding_table.find("*");
-      if (it != this->binding_table.end()) { // Catch-all binding
-        (*it->second)(node, sibling, this);
-      }
     }
   }
 }
