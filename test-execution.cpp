@@ -14,8 +14,8 @@ void test_trivial_execution() {
   MEXP *program = (new MexprBuilder("foo [bar baz] bux"))->parse();
   LTRAtomPrinterStrategy(program, ss).execute();
   std::string s = ss.str();
-  char *substrings[] = {"Atom: (", "Atom: [", "Atom: bar", "Atom: baz", 
-											  "Finalizing: [", "Atom: bux", "Finalizing: ("};
+  char const *substrings[7] = {"Atom: (", "Atom: [", "Atom: bar", "Atom: baz", 
+                               "Finalizing: [", "Atom: bux", "Finalizing: ("};
 	for (unsigned int i = 0; i < 7; i++) {
     assert_contains(s, std::string(substrings[i]));
 	}
