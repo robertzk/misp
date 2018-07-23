@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "execution.h"
 #include "strategies.h"
+#include "python.h"
 
 int main(int argc, char** argv);
 

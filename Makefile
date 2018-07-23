@@ -4,7 +4,7 @@
 all: misp
 
 misp:
-	clang++ -Wall -std=c++11 ast.cpp tokenizer.cpp execution.cpp strategies.cpp misp.cpp -o bin/misp
+	clang++ -Wall -std=c++11 ast.cpp tokenizer.cpp execution.cpp strategies.cpp python.cpp misp.cpp -o bin/misp
 
 deps:
 	deps

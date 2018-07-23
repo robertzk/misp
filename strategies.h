@@ -6,6 +6,9 @@
 bool is_atom(MEXP *node);
 bool is_encloser_atom(MEXP *node);
 bool is_symbolic_atom(MEXP *node);
+
+bool is_square_bracket_expression(MEXP *node);
+bool is_brace_bracket_expression(MEXP *node);
 bool is_atomic_expression(MEXP *node);
 
 class ShellExecutionBinding : public MispBinding {
@@ -33,57 +36,6 @@ public:
   void finalize(MEXP *node, MEXP *sibling = NULL);
 };
 
-
-class PythonExecutionBinding : public MispBinding {
-protected:
-  std::ostream &os;
-  std::stringstream pyprogram;
-	int skipcount;
-
-  void initialize_table();
-  static void import(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void apply_method(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void make_string(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void make_tuple(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void make_list(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void make_dict(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void call_function(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void assign(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void element(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void print(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void define_function(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void for_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void andor_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void in_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void return_statement(MEXP* node, MEXP* sibling, MispBinding *binding);
-  static void unknown_binding(MEXP* node, MEXP* sibling, MispBinding *binding);
-
-public:
-  PythonExecutionBinding(std::ostream &_os = std::cout) : MispBinding(), os(_os), skipcount(0) { initialize_table(); }
-
-  void apply(MEXP *node, MEXP *sibling);
-
-  std::ostream &get_os() { return this->os; }
-  std::stringstream &get_pyprogram() { return this->pyprogram; }
-
-  void increment_skipcount() { this->skipcount++; }
-  int get_skipcount() { return this->skipcount; }
-};
-
-
-class PythonExecutionStrategy : public ApplyBindingLTRStrategy {
-protected:
-  std::ostream &pystream;
-  std::string filename;
-
-public:
-  PythonExecutionStrategy(MEXP *_program, std::ostream &_os = std::cout, std::ostream &_pystream = std::cout, std::string _filename = "") : 
-    ApplyBindingLTRStrategy(_program, new PythonExecutionBinding(_os)), pystream(_pystream), filename(_filename) { }
-
-  void execute();
-  void effect(MEXP *node, MEXP *sibling = NULL);
-  void finalize(MEXP *node, MEXP *sibling = NULL);
-};
 
 class DebugTokensStrategy : public ApplyBindingLTRStrategy {
 public:
