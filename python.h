@@ -7,7 +7,7 @@ class PythonExecutionBinding : public MispBinding {
 protected:
   std::ostream &os;
   std::stringstream pyprogram;
-	int skipcount;
+  int skipcount;
 
   void initialize_table();
 
