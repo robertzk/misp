@@ -8,6 +8,8 @@ protected:
   std::ostream &os;
   std::stringstream pyprogram;
   int skipcount;
+  // TODO: Add indentation
+  // TODO: Add flag to modify behavior of for_statement depending on comprehension
 
   void initialize_table();
 
