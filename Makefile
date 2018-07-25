@@ -1,4 +1,3 @@
-# osiris binary is not always up-to-date despite what make thinks so label as phony
 .PHONY: misp tests deps test-ast test-tokenizer test-execution
 
 all: misp
